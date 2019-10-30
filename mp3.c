@@ -12,7 +12,7 @@ void main()
     char song_title[MAXCHAR];
     char intInput[MAXCHAR];
     int yr = 0;
-    int rt = 0;
+    int rt = 0; 
     //used to add the escape char
     int strLen = 0;
     //used to start the loop
@@ -168,6 +168,8 @@ void addMP3(char *artistName, char *songTitle, int songYear, int duration)
 //deletes from head when its only node so far
 //when deleting any other node besides head, gives a weird NULL as name
 //when deleting head with 2 or more, seg fault
+//-------
+
 void deleteMP3(char *artistName)
 {
     mp3_node *temp;
@@ -175,7 +177,7 @@ void deleteMP3(char *artistName)
 
     while (temp)
     {
-        printf("temp->artistName = %s\t\tartistName = %s\n", temp->artistName, artistName);
+        //if the provided name exists in the list
         if (strcmp(temp->artistName, artistName) == 0)
         {
             printf("artist found\n");
@@ -188,22 +190,28 @@ void deleteMP3(char *artistName)
                     head = NULL;
                 }
 
-                if (temp==tail)
-                {
-                    temp->next->prev = temp->prev;
-                    head = temp->next;
+                else{
+                    head = head->next;
+                    head -> prev = NULL;
+
                 }
+
+                // if (temp==tail)
+                // {
+                //     temp->next->prev = temp->prev;
+                //     head = temp->next;
+                // }
             }
 
             //CASE 2 - deleting tail
-            if (temp->next) // < its the tail
+            else if (temp == tail) // < its the tail
             {
                 temp->prev->next = NULL;
                 tail = temp->prev;
             }
 
             //CASE 3 - deleting middle
-            if (temp->prev && temp->next)
+            else 
             {
                 temp->prev->next = temp->next;
                 temp->next->prev = temp->prev;
@@ -217,6 +225,9 @@ void deleteMP3(char *artistName)
         temp = temp->next;
     }
 }
+
+//------
+
 void printMP3Forward()
 {
     mp3_node *temp;
