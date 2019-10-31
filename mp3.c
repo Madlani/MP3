@@ -12,11 +12,12 @@ void main()
     char song_title[MAXCHAR];
     char intInput[MAXCHAR];
     int yr = 0;
-    int rt = 0; 
+    int rt = 0;
     //used to add the escape char
     int strLen = 0;
     //used to start the loop
     strcpy(numChoice, "-1");
+    printf("\nWelcome to the Mar MP3 Player!\n");
     //use atoi for switch cases
     while (atoi(numChoice) != 5)
     {
@@ -61,7 +62,7 @@ void main()
             fgets(artist_name, MAXCHAR, stdin);
             strLen = (int)strlen(artist_name);
             artist_name[strLen - 1] = '\0';
-            printf("you want to delete: %s", artist_name);
+            printf("You are deleting: [%s]", artist_name);
             deleteMP3(artist_name);
             break;
 
@@ -72,16 +73,15 @@ void main()
             printMP3Backward();
             break;
         case 5: //Exit
-            //cleanUp(newLinkedList);
+            cleanUpList();
             break;
-
-        default:
+        default: //Not one of the available options
             printf("You've entered a character that isn't allowed. Please enter a number 1-5\n");
-            // fgets(numChoice, MAXCHAR, stdin);
         }
     }
 }
 
+//Simply creates a new mp3_node with the given parameters.
 mp3_node *createMP3(char *artistName, char *songTitle, int songYear, int runTime)
 {
     mp3_node *createdNode = malloc(sizeof(mp3_node));
@@ -98,6 +98,7 @@ mp3_node *createMP3(char *artistName, char *songTitle, int songYear, int runTime
     return createdNode;
 }
 
+//Uses the createMP3 method & adds it to the linked list.
 void addMP3(char *artistName, char *songTitle, int songYear, int duration)
 {
     mp3_node *addedMP3 = createMP3(artistName, songTitle, songYear, duration);
@@ -115,61 +116,8 @@ void addMP3(char *artistName, char *songTitle, int songYear, int duration)
     addedMP3->prev = temp;
     tail = addedMP3;
 }
-// void deleteMP3(char *artistName)
-// {
-//     mp3_node *temp;
-//     temp = head;
 
-//     while (temp)
-//     {
-//         printf("temp->artistName = %s\t\tartistName = %s\n", temp->artistName, artistName);
-//         if (strcmp(temp->artistName, artistName) == 0)
-//         {
-//             printf("artist found\n");
-//             //CASE 1 - deleting head
-//             if (temp->prev == NULL) // < its the head
-//             {
-//                 if (head == tail)
-//                 { // < its the tail - only one node
-//                     tail = NULL;
-//                     head = NULL;
-//                 }
-
-//                 if (temp==tail)
-//                 {
-//                     temp->next->prev = temp->prev;
-//                     head = temp->next;
-//                 }
-//             }
-
-//             //CASE 2 - deleting tail
-//             if (temp->next) // < its the tail
-//             {
-//                 temp->prev->next = NULL;
-//                 tail = temp->prev;
-//             }
-
-//             //CASE 3 - deleting middle
-//             if (temp->prev && temp->next)
-//             {
-//                 temp->prev->next = temp->next;
-//                 temp->next->prev = temp->prev;
-//             }
-
-//             free(temp->artistName);
-//             free(temp->songTitle);
-//             free(temp);
-//         }
-
-//         temp = temp->next;
-//     }
-// }
-
-//deletes from head when its only node so far
-//when deleting any other node besides head, gives a weird NULL as name
-//when deleting head with 2 or more, seg fault
-//-------
-
+//Takes in an artist's name, and deletes all records associated with that artist.
 void deleteMP3(char *artistName)
 {
     mp3_node *temp;
@@ -180,7 +128,6 @@ void deleteMP3(char *artistName)
         //if the provided name exists in the list
         if (strcmp(temp->artistName, artistName) == 0)
         {
-            printf("artist found\n");
             //CASE 1 - deleting head
             if (temp == head) // < its the head
             {
@@ -190,17 +137,11 @@ void deleteMP3(char *artistName)
                     head = NULL;
                 }
 
-                else{
+                else //more than one node
+                {
                     head = head->next;
-                    head -> prev = NULL;
-
+                    head->prev = NULL;
                 }
-
-                // if (temp==tail)
-                // {
-                //     temp->next->prev = temp->prev;
-                //     head = temp->next;
-                // }
             }
 
             //CASE 2 - deleting tail
@@ -211,7 +152,7 @@ void deleteMP3(char *artistName)
             }
 
             //CASE 3 - deleting middle
-            else 
+            else
             {
                 temp->prev->next = temp->next;
                 temp->next->prev = temp->prev;
@@ -226,8 +167,7 @@ void deleteMP3(char *artistName)
     }
 }
 
-//------
-
+//Prints your playlist forward
 void printMP3Forward()
 {
     mp3_node *temp;
@@ -240,6 +180,7 @@ void printMP3Forward()
         temp = temp->next;
     }
 }
+//Prints your playlist backwards
 void printMP3Backward()
 {
     mp3_node *temp;
@@ -251,6 +192,29 @@ void printMP3Backward()
         temp = temp->prev;
     }
 }
+
+//Frees up memory used that wasn't captured by delete.
+// void cleanUpList()
+// {
+//     mp3_node *temp;
+//     temp = head;
+
+//     while (temp)
+//     {
+//         mp3_node *current = temp->next;
+//         free(temp->artistName);
+//         free(temp->songTitle);
+//         free(temp);
+//         temp = current;
+//     }
+// }
+
 void cleanUpList()
 {
+    mp3_node *temp;
+    temp = head;
+    while(temp){
+        deleteMP3(temp->artistName);
+    }
+    
 }
